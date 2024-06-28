@@ -4,14 +4,17 @@ import Button from '@/components/ui/Button';
 import GoogleLogo from '@/components/ui/GoogleLogo';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const page = () => {
   const [isLoading, setIsLoading] = useState(false);
   async function loginWithGoogle() {
     setIsLoading(true);
     try {
+      // throw new Error('Not implemented');
       await signIn('google');
     } catch (error) {
+      toast.error('Could not sign in');
     } finally {
       setIsLoading(false);
     }
