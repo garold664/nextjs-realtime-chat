@@ -1,4 +1,5 @@
 import { Icons } from '@/components/Icons';
+import SignOutButton from '@/components/SignOutButton';
 import { authOptions } from '@/lib/auth';
 import { SidebarOption } from '@/types/typing';
 import { getServerSession } from 'next-auth';
@@ -98,7 +99,7 @@ export default async function DashboardLayout({
                 </div>
               </div>
 
-              {/* <SignOutButton className="h-full aspect-square" /> */}
+              <SignOutButton className="h-full aspect-square" />
             </li>
           </ul>
         </nav>
