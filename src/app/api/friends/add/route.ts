@@ -9,19 +9,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { email: emailToAdd } = addFriendValidator.parse(body.email);
-    const RESTResponse = await fetch(
-      `${process.env.UPSTASH_REDIS_REST_URL}/get/user:email:${emailToAdd}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
-        },
-        cache: 'no-store',
-      }
-    );
+    const idToAdd = (await fetchRedis('get', `user:email:${emailToAdd}`)) as
+      | string
+      | null;
 
-    const data = (await RESTResponse.json()) as { result: string | null };
+    console.log('idToAdd: ', idToAdd);
 
-    const idToAdd = data.result;
+    // const data = (await RESTResponse.json()) as { result: string | null };
+
+    // const idToAdd = data.result;
 
     if (!idToAdd) {
       return new Response("This person doesn't exist", { status: 400 });
