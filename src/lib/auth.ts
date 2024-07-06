@@ -4,6 +4,7 @@ import { db } from './db';
 import GoogleProvider from 'next-auth/providers/google';
 import { User } from '@/types/db';
 import { fetchRedis } from '@/helpers/redis';
+import NextAuth from 'next-auth/next';
 
 function getGoogleCredentials() {
   const credentials =
