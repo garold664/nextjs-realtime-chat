@@ -5,9 +5,10 @@ import { db } from '../lib/db';
 export default async function Home() {
   await db.set('hello', 'world!!!');
   return (
-    <div className="text-3xl text-blue-500">
+    <div className="flex gap-5 text-xl text-blue-500">
       <Link href={'/login'}>Sign in</Link>
-      <Button variant={'ghost'}>Home</Button>
+      <Link href={'/dashboard'}>Dashboard</Link>
+      <Link href={'/dashboard/add'}>Add friend</Link>
     </div>
   );
 }

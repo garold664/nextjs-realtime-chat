@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
         | null;
       console.log('dbUserResult: ', dbUserResult);
       if (!dbUserResult) {
-        console.log('new token: ', token);
+        // console.log('new token: ', token);
         token.id = user!.id;
         return token;
       }
@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
       }
-      console.log(' session: ', session);
+      // console.log(' session: ', session);
       return session;
     },
 

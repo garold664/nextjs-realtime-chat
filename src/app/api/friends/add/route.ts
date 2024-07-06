@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       | string
       | null;
 
-    console.log('idToAdd: ', idToAdd);
+    // console.log('idToAdd: ', idToAdd);
 
     // const data = (await RESTResponse.json()) as { result: string | null };
 
