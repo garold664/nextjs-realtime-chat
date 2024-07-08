@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
       const dbUserResult = (await fetchRedis('get', `user:${token.id}`)) as
         | string
         | null;
-      console.log('dbUserResult: ', dbUserResult);
+      // console.log('dbUserResult: ', dbUserResult);
       if (!dbUserResult) {
         // console.log('new token: ', token);
         token.id = user!.id;
