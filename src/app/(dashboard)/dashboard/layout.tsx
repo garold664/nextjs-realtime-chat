@@ -3,6 +3,7 @@ import FriendRequestSidebarOptions, {
 } from '@/components/FriendRequestSidebarOptions';
 import { Icons } from '@/components/Icons';
 import SignOutButton from '@/components/SignOutButton';
+import getFriendsByUserId from '@/helpers/get-friends-by-user-id';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { User } from '@/types/db';
@@ -32,6 +33,8 @@ export default async function DashboardLayout({
   if (!session) {
     notFound();
   }
+
+  const friends = await getFriendsByUserId(session.user.id);
 
   const unseenRequestCount = (
     (await fetchRedis(
