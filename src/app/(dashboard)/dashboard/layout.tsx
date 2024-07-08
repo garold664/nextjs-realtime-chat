@@ -2,6 +2,7 @@ import FriendRequestSidebarOptions, {
   iconWrapperClasses,
 } from '@/components/FriendRequestSidebarOptions';
 import { Icons } from '@/components/Icons';
+import SidebarChatList from '@/components/SidebarChatList';
 import SignOutButton from '@/components/SignOutButton';
 import getFriendsByUserId from '@/helpers/get-friends-by-user-id';
 import { fetchRedis } from '@/helpers/redis';
@@ -52,14 +53,16 @@ export default async function DashboardLayout({
         >
           <Icons.Logo className="h-8 w-8" />
         </Link>
-        <div className="text-xs font-semibold leading-6 text-gray-400">
-          Your chats
-        </div>
+        {friends.length > 0 && (
+          <div className="text-xs font-semibold leading-6 text-gray-400">
+            Your chats
+          </div>
+        )}
 
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              {/* <SidebarChatList sessionId={session.user.id} friends={friends} /> */}
+              <SidebarChatList sessionId={session.user.id} friends={friends} />
             </li>
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">
