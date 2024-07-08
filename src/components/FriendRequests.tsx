@@ -24,7 +24,7 @@ export default function FriendRequests({
     action: 'accept' | 'deny',
     senderId: string
   ) => {
-    await axios.post(`/api/requests/${action}`, { id: senderId });
+    await axios.post(`/api/friends/${action}`, { id: senderId });
 
     setFriendRequests((prev) =>
       prev.filter((request) => request.senderId !== senderId)
