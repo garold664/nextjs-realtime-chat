@@ -10,7 +10,7 @@ export default function usePusher(
   useEffect(() => {
     pusherClient.subscribe(toPusherKey(channel));
 
-    pusherClient.bind('incoming_friend_request', callback);
+    pusherClient.bind(event, callback);
 
     return () => {
       pusherClient.unsubscribe(toPusherKey(channel));
