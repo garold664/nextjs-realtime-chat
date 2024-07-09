@@ -45,26 +45,25 @@ interface MessagesProps {
 
 // ];
 
-const fakeMessages: Message[] = [];
-const senderIds = [
-  'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
-  'c561391a-bcb5-4e28-aca7-7c91468e0c14',
-];
+// const fakeMessages: Message[] = [];
+// const senderIds = [
+//   'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
+//   'c561391a-bcb5-4e28-aca7-7c91468e0c14',
+// ];
 
-for (let i = 0; i < 100; i++) {
-  const randomNum = Math.random();
-  const senderId = senderIds[randomNum > 0.5 ? 0 : 1];
-  const receiverId = senderIds[randomNum > 0.5 ? 1 : 0];
-  const text = 'Unique message text ';
-  const timestamp = Date.now() + i * 100;
-  fakeMessages.push({
-    id: (i + 1).toString(),
-    senderId,
-    text,
-    receiverId,
-    timestamp,
-  });
-}
+// for (let i = 0; i < 100; i++) {
+//   const randomNum = Math.random();
+//   const senderId = senderIds[randomNum > 0.5 ? 0 : 1];
+//   const receiverId = senderIds[randomNum > 0.5 ? 1 : 0];
+//   const text = 'Unique message text ';
+//   const timestamp = Date.now() + i * 100;
+//   fakeMessages.push({
+//     id: (i + 1).toString(),
+//     senderId,
+//     text,
+//     timestamp,
+//   });
+// }
 
 export default function Messages({
   initialMessages,
@@ -72,7 +71,7 @@ export default function Messages({
 }: MessagesProps) {
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   // const [messages, setMessages] = useState(initialMessages);
-  const [messages, setMessages] = useState(fakeMessages);
+  const [messages, setMessages] = useState(initialMessages);
   return (
     <div
       id="messages"
