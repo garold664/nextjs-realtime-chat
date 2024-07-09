@@ -27,8 +27,11 @@ export default function FriendRequests({
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
 
-    const friendRequestsHandler = () => {
-      console.log('new friend request');
+    const friendRequestsHandler = ({
+      senderId,
+      senderEmail,
+    }: IncomingFriendRequest) => {
+      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
     };
     pusherClient.bind('incoming_friend_request', friendRequestsHandler);
 
