@@ -1,5 +1,6 @@
 'use client';
 
+import usePusher from '@/hooks/usePusher';
 import { pusherClient } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/util';
 import { User } from 'lucide-react';
@@ -19,25 +20,34 @@ export default function FriendRequestSidebarOptions({
   const [unseenRequestCount, setUnseenRequestCount] = useState<number>(
     initialUnseenRequestCount
   );
+  const friendRequestsHandler = () => {
+    setUnseenRequestCount((prev) => prev + 1);
+  };
 
-  useEffect(() => {
-    pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-    );
+  usePusher(
+    `user:${sessionId}:incoming_friend_requests`,
+    'incoming_friend_request',
+    friendRequestsHandler
+  );
 
-    const friendRequestsHandler = () => {
-      setUnseenRequestCount((prev) => prev + 1);
-    };
-    pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+  // useEffect(() => {
+  //   pusherClient.subscribe(
+  //     toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+  //   );
 
-    return () => {
-      pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-      );
+  //   const friendRequestsHandler = () => {
+  //     setUnseenRequestCount((prev) => prev + 1);
+  //   };
+  //   pusherClient.bind('incoming_friend_request', friendRequestsHandler);
 
-      pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
-    };
-  }, []);
+  //   return () => {
+  //     pusherClient.unsubscribe(
+  //       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+  //     );
+
+  //     pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
+  //   };
+  // }, []);
 
   return (
     <Link

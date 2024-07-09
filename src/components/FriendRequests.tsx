@@ -1,5 +1,6 @@
 'use client';
 
+import usePusher from '@/hooks/usePusher';
 import { pusherClient } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/util';
 import axios from 'axios';
@@ -22,27 +23,40 @@ export default function FriendRequests({
 
   const router = useRouter();
 
-  useEffect(() => {
-    pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-    );
+  const friendRequestsHandler = ({
+    senderId,
+    senderEmail,
+  }: IncomingFriendRequest) => {
+    setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+  };
 
-    const friendRequestsHandler = ({
-      senderId,
-      senderEmail,
-    }: IncomingFriendRequest) => {
-      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-    };
-    pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+  usePusher(
+    `user:${sessionId}:incoming_friend_requests`,
+    'incoming_friend_request',
+    friendRequestsHandler
+  );
 
-    return () => {
-      pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-      );
+  // useEffect(() => {
+  //   pusherClient.subscribe(
+  //     toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+  //   );
 
-      pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
-    };
-  }, [incomingFriendRequests]);
+  //   const friendRequestsHandler = ({
+  //     senderId,
+  //     senderEmail,
+  //   }: IncomingFriendRequest) => {
+  //     setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+  //   };
+  //   pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+
+  //   return () => {
+  //     pusherClient.unsubscribe(
+  //       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+  //     );
+
+  //     pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
+  //   };
+  // }, [incomingFriendRequests]);
 
   const handleFriendRequest = async (
     action: 'accept' | 'deny',
