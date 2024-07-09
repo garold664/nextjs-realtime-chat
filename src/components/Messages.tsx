@@ -4,6 +4,8 @@ import { cn } from '@/lib/util';
 import { Message } from '@/types/db';
 import { useRef, useState } from 'react';
 
+import { format } from 'date-fns';
+
 interface MessagesProps {
   initialMessages: Message[];
   sessionId: string;
@@ -72,6 +74,11 @@ export default function Messages({
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   // const [messages, setMessages] = useState(initialMessages);
   const [messages, setMessages] = useState(initialMessages);
+
+  const formatTimestamp = (timestamp: number) => {
+    return format(timestamp, 'HH:mm');
+  };
+
   return (
     <div
       id="messages"
@@ -116,7 +123,7 @@ export default function Messages({
                 >
                   {message.text}{' '}
                   <span className="ml-2 text-xs text-gray-400">
-                    {new Date(message.timestamp).toString()}
+                    {formatTimestamp(message.timestamp).toString()}
                   </span>
                 </span>
               </div>
