@@ -1,3 +1,4 @@
+import Messages from '@/components/Messages';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -50,7 +51,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
   const chatPartner = (await db.get(`user:${chatPartnerId}`)) as User;
 
-  const initMessages = await getChatMessages(chatId);
+  const initialMessages = await getChatMessages(chatId);
 
   return (
     <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
@@ -79,6 +80,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
           </div>
         </div>
       </div>
+
+      <Messages sessionId={user.id} initialMessages={initialMessages} />
     </div>
   );
 }
