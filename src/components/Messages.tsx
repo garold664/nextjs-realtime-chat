@@ -5,11 +5,7 @@ import { Message } from '@/types/db';
 import { useRef, useState } from 'react';
 
 import { format } from 'date-fns';
-
-interface MessagesProps {
-  initialMessages: Message[];
-  sessionId: string;
-}
+import Image from 'next/image';
 
 // b2e8d6a0-d002-4acb-9463-eb97d06c989d--c561391a-bcb5-4e28-aca7-7c91468e0c14
 
@@ -67,9 +63,18 @@ interface MessagesProps {
 //   });
 // }
 
+interface MessagesProps {
+  initialMessages: Message[];
+  sessionId: string;
+  chatPartnerImage: string;
+  sessionImage: string | undefined | null;
+}
+
 export default function Messages({
   initialMessages,
   sessionId,
+  chatPartnerImage,
+  sessionImage,
 }: MessagesProps) {
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   // const [messages, setMessages] = useState(initialMessages);
@@ -98,6 +103,8 @@ export default function Messages({
             <div
               className={cn('flex items-end', {
                 'justify-end': isCurrentUser,
+                'pl-6': hasNextMessageFromSameUser, // adding space on left side from message
+                'pr-6': hasNextMessageFromSameUser && isCurrentUser, // adding space on right side from message
               })}
             >
               <div
@@ -106,8 +113,6 @@ export default function Messages({
                   {
                     'order-1 items-end': isCurrentUser,
                     'order-2 items-start': !isCurrentUser,
-                    // 'items-start': hasNextMessageFromSameUser,
-                    // 'items-end': !hasNextMessageFromSameUser,
                   }
                 )}
               >
@@ -116,9 +121,9 @@ export default function Messages({
                     'bg-indigo-600 text-white': isCurrentUser,
                     'bg-gray-200 text-gray-900': !isCurrentUser,
                     'rounded-br-none':
-                      !isCurrentUser && hasNextMessageFromSameUser,
+                      !isCurrentUser && !hasNextMessageFromSameUser,
                     'rounded-bl-none':
-                      isCurrentUser && hasNextMessageFromSameUser,
+                      isCurrentUser && !hasNextMessageFromSameUser,
                   })}
                 >
                   {message.text}{' '}
@@ -127,6 +132,26 @@ export default function Messages({
                   </span>
                 </span>
               </div>
+              {!hasNextMessageFromSameUser && (
+                <div
+                  className={cn('relative w-6 h-6', {
+                    'order-1': !isCurrentUser,
+                    'order-2': isCurrentUser,
+                  })}
+                >
+                  <Image
+                    src={
+                      isCurrentUser
+                        ? (sessionImage as string)
+                        : chatPartnerImage
+                    }
+                    alt="avatar"
+                    fill
+                    referrerPolicy="no-referrer"
+                    className="rounded-full"
+                  />
+                </div>
+              )}
             </div>
           </div>
         );
