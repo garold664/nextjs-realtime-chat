@@ -4,6 +4,9 @@ import { useRef, useState } from 'react';
 import Button from './ui/Button';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import { User } from '@/types/db';
+import axios from 'axios';
+import { text } from 'stream/consumers';
+import toast from 'react-hot-toast';
 
 interface ChatInputProps {
   chatPartner: User;
@@ -14,12 +17,21 @@ export default function ChatInput({ chatPartner, chatId }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  function sendMessage() {
+  async function sendMessage() {
     if (!input) return;
     setIsLoading(true);
-    setInput('');
-    textareaRef.current?.focus();
-    setIsLoading(false);
+    try {
+      await axios.post('/api/friends/message/send', {
+        text: input,
+        chatId,
+      });
+      setInput('');
+    } catch (error) {
+      toast.error('Something went wrong. Please try again later.');
+    } finally {
+      setIsLoading(false);
+      textareaRef.current?.focus();
+    }
   }
 
   return (
