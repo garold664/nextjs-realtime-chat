@@ -6,66 +6,13 @@ import { useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
-
-// b2e8d6a0-d002-4acb-9463-eb97d06c989d--c561391a-bcb5-4e28-aca7-7c91468e0c14
-
-// const fakeMessages = [
-//   {
-//     id: '1',
-//     senderId: 'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
-//     text: 'Lorem  ipsum dolores ',
-//     timestamp: '1',
-//   },
-//   {
-//     id: '2',
-//     senderId: 'c561391a-bcb5-4e28-aca7-7c91468e0c14',
-//     text: 'Lorem  ipsum dolores ',
-//     timestamp: '1',
-//   },
-//   {
-//     id: '3',
-//     senderId: 'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
-//     text: 'Lorem  ipsum dolores ',
-//     timestamp: '1',
-//   },
-//   {
-//     id: '4',
-//     senderId: 'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
-//     text: 'Lorem  ipsum dolores ',
-//     timestamp: '1',
-//   },
-//   {
-//     id: '5',
-//     senderId: 'c561391a-bcb5-4e28-aca7-7c91468e0c14',
-//     text: 'Lorem  ipsum dolores ',
-//     timestamp: '1',
-//   },
-
-// ];
-
-// const fakeMessages: Message[] = [];
-// const senderIds = [
-//   'b2e8d6a0-d002-4acb-9463-eb97d06c989d',
-//   'c561391a-bcb5-4e28-aca7-7c91468e0c14',
-// ];
-
-// for (let i = 0; i < 100; i++) {
-//   const randomNum = Math.random();
-//   const senderId = senderIds[randomNum > 0.5 ? 0 : 1];
-//   const receiverId = senderIds[randomNum > 0.5 ? 1 : 0];
-//   const text = 'Unique message text ';
-//   const timestamp = Date.now() + i * 100;
-//   fakeMessages.push({
-//     id: (i + 1).toString(),
-//     senderId,
-//     text,
-//     timestamp,
-//   });
-// }
+import usePusher from '@/hooks/usePusher';
+import { IncomingMessage } from 'http';
 
 interface MessagesProps {
   initialMessages: Message[];
   sessionId: string;
+  chatId: string;
   chatPartnerImage: string;
   sessionImage: string | undefined | null;
 }
@@ -73,6 +20,7 @@ interface MessagesProps {
 export default function Messages({
   initialMessages,
   sessionId,
+  chatId,
   chatPartnerImage,
   sessionImage,
 }: MessagesProps) {
@@ -83,6 +31,12 @@ export default function Messages({
   const formatTimestamp = (timestamp: number) => {
     return format(timestamp, 'HH:mm');
   };
+
+  const messageHandler = (message: Message) => {
+    setMessages((prev) => [message, ...prev]);
+  };
+
+  usePusher(`chat:${chatId}`, 'incoming-message', messageHandler);
 
   return (
     <div
