@@ -1,9 +1,11 @@
 'use client';
 
+import { pusherClient } from '@/lib/pusher';
+import { toPusherKey } from '@/lib/util';
 import axios from 'axios';
 import { Check, UserPlus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface FriendRequestsProps {
   incomingFriendRequests: IncomingFriendRequest[];
@@ -19,6 +21,25 @@ export default function FriendRequests({
   );
 
   const router = useRouter();
+
+  useEffect(() => {
+    pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    );
+
+    const friendRequestsHandler = () => {
+      console.log('new friend request');
+    };
+    pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      );
+
+      pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
+    };
+  }, [incomingFriendRequests]);
 
   const handleFriendRequest = async (
     action: 'accept' | 'deny',
