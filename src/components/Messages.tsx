@@ -56,7 +56,7 @@ for (let i = 0; i < 100; i++) {
   const senderId = senderIds[randomNum > 0.5 ? 0 : 1];
   const receiverId = senderIds[randomNum > 0.5 ? 1 : 0];
   const text = 'Unique message text ';
-  const timestamp = Date.now();
+  const timestamp = Date.now() + i * 100;
   fakeMessages.push({
     id: (i + 1).toString(),
     senderId,
@@ -117,7 +117,7 @@ export default function Messages({
                 >
                   {message.text}{' '}
                   <span className="ml-2 text-xs text-gray-400">
-                    {message.timestamp}
+                    {new Date(message.timestamp).toString()}
                   </span>
                 </span>
               </div>
