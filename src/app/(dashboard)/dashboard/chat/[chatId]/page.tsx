@@ -50,7 +50,9 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
   const chatPartnerId = userId1 !== user.id ? userId1 : userId2;
 
-  const chatPartner = (await db.get(`user:${chatPartnerId}`)) as User;
+  const chatPartner = JSON.parse(
+    await fetchRedis('get', `user:${chatPartnerId}`)
+  ) as User;
 
   const initialMessages = await getChatMessages(chatId);
 
