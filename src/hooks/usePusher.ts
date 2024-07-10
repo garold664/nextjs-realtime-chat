@@ -14,31 +14,17 @@ export default function usePusher(
   callback: CallbackType,
   pathname?: string | null
 ) {
-  if (pathname) {
-    useEffect(() => {
-      pusherClient.subscribe(toPusherKey(channel));
+  useEffect(() => {
+    console.log('usePusher useEffect called');
+    pusherClient.subscribe(toPusherKey(channel));
 
-      pusherClient.bind(event, callback);
+    pusherClient.bind(event, callback);
 
-      return () => {
-        console.log('usePusher useEffect return called');
-        pusherClient.unsubscribe(toPusherKey(channel));
+    return () => {
+      console.log('usePusher useEffect return called');
+      pusherClient.unsubscribe(toPusherKey(channel));
 
-        pusherClient.unbind(event, callback);
-      };
-    }, [pathname]);
-  } else {
-    useEffect(() => {
-      console.log('usePusher useEffect called');
-      pusherClient.subscribe(toPusherKey(channel));
-
-      pusherClient.bind(event, callback);
-
-      return () => {
-        pusherClient.unsubscribe(toPusherKey(channel));
-
-        pusherClient.unbind(event, callback);
-      };
-    }, []);
-  }
+      pusherClient.unbind(event, callback);
+    };
+  }, [pathname, channel, event, callback]);
 }
