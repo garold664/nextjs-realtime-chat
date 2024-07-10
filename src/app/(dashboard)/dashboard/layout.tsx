@@ -48,7 +48,12 @@ export default async function DashboardLayout({
   return (
     <div className="w-full flex h-screen">
       <div className="md:hidden">
-        <MobileChatLayout />
+        <MobileChatLayout
+          friends={friends}
+          session={session}
+          unseenRequestCount={unseenRequestCount}
+          sidebarOptions={sidebarOptions}
+        />
       </div>
       <div className="hidden md:flex h-full w-full max-w-xs grow flex-col gap-5 overflow-y-auto border-r border-slate-400 bg-white px-6">
         <Link
