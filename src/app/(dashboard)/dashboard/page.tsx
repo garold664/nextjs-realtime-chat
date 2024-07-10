@@ -1,4 +1,3 @@
-import Button from '@/components/ui/Button';
 import getFriendsByUserId from '@/helpers/get-friends-by-user-id';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
@@ -31,7 +30,7 @@ const Page = async () => {
       };
     })
   );
-  console.log('friendsWithLastMessage: ', friendsWithLastMessage);
+  // console.log('friendsWithLastMessage: ', friendsWithLastMessage);
 
   return (
     <div className="container py-12">

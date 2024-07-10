@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.2",
     "@hookform/resolvers": "^3.6.0",
     "@next-auth/upstash-redis-adapter": "^3.0.4",
     "@upstash/redis": "^1.31.6",
