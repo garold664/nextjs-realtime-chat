@@ -4,7 +4,7 @@ import { chatHrefConstructor } from '@/lib/util';
 import { ExtendedMessage, Message, User } from '@/types/db';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import UnseenChatToast from './UnseenChatToast';
 
@@ -21,32 +21,35 @@ export default function SidebarChatList({
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
 
-  const newFriendHandler = () => {
+  const newFriendHandler = useCallback(() => {
     router.refresh();
-  };
+  }, [router]);
 
-  const chatHandler = (message: ExtendedMessage) => {
-    const shouldNotify =
-      pathname !==
-      `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
+  const chatHandler = useCallback(
+    (message: ExtendedMessage) => {
+      const shouldNotify =
+        pathname !==
+        `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
 
-    if (!shouldNotify) return;
+      if (!shouldNotify) return;
 
-    toast.custom((t) => {
-      return (
-        <UnseenChatToast
-          t={t}
-          senderImg={message.senderImg}
-          senderName={message.senderName}
-          sessionId={sessionId}
-          senderMessage={message.text}
-          senderId={message.senderId}
-        />
-      );
-    });
+      toast.custom((t) => {
+        return (
+          <UnseenChatToast
+            t={t}
+            senderImg={message.senderImg}
+            senderName={message.senderName}
+            sessionId={sessionId}
+            senderMessage={message.text}
+            senderId={message.senderId}
+          />
+        );
+      });
 
-    setUnseenMessages((prev) => [...prev, message]);
-  };
+      setUnseenMessages((prev) => [...prev, message]);
+    },
+    [pathname, sessionId]
+  );
 
   usePusher(`user:${sessionId}:chats`, 'new-message', chatHandler, pathname);
   usePusher(

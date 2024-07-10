@@ -2,12 +2,11 @@
 
 import { cn } from '@/lib/util';
 import { Message } from '@/types/db';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
 import usePusher from '@/hooks/usePusher';
-import { IncomingMessage } from 'http';
 
 interface MessagesProps {
   initialMessages: Message[];
@@ -32,9 +31,12 @@ export default function Messages({
     return format(timestamp, 'HH:mm');
   };
 
-  const messageHandler = (message: Message) => {
-    setMessages((prev) => [message, ...prev]);
-  };
+  const messageHandler = useCallback(
+    (message: Message) => {
+      setMessages((prev) => [message, ...prev]);
+    },
+    [setMessages]
+  );
 
   usePusher(`chat:${chatId}`, 'incoming-message', messageHandler);
 

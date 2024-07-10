@@ -15,13 +15,13 @@ export default function usePusher(
   pathname?: string | null
 ) {
   useEffect(() => {
-    console.log('usePusher useEffect called');
+    // console.log('usePusher useEffect called');
     pusherClient.subscribe(toPusherKey(channel));
 
     pusherClient.bind(event, callback);
 
     return () => {
-      console.log('usePusher useEffect return called');
+      // console.log('usePusher useEffect return called');
       pusherClient.unsubscribe(toPusherKey(channel));
 
       pusherClient.unbind(event, callback);

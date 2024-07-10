@@ -6,7 +6,7 @@ import { toPusherKey } from '@/lib/util';
 import axios from 'axios';
 import { Check, UserPlus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface FriendRequestsProps {
   incomingFriendRequests: IncomingFriendRequest[];
@@ -23,12 +23,12 @@ export default function FriendRequests({
 
   const router = useRouter();
 
-  const friendRequestsHandler = ({
-    senderId,
-    senderEmail,
-  }: IncomingFriendRequest) => {
-    setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-  };
+  const friendRequestsHandler = useCallback(
+    ({ senderId, senderEmail }: IncomingFriendRequest) => {
+      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+    },
+    [setFriendRequests]
+  );
 
   usePusher(
     `user:${sessionId}:incoming_friend_requests`,
