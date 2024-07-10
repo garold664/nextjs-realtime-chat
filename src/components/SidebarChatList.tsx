@@ -32,8 +32,6 @@ export default function SidebarChatList({
 
     if (!shouldNotify) return;
 
-    console.log(message);
-
     toast.custom((t) => {
       return (
         <UnseenChatToast
@@ -50,8 +48,13 @@ export default function SidebarChatList({
     setUnseenMessages((prev) => [...prev, message]);
   };
 
-  usePusher(`user:${sessionId}:chats`, 'new-message', chatHandler);
-  usePusher(`user:${sessionId}:friends`, 'new-friend', newFriendHandler);
+  usePusher(`user:${sessionId}:chats`, 'new-message', chatHandler, pathname);
+  usePusher(
+    `user:${sessionId}:friends`,
+    'new-friend',
+    newFriendHandler,
+    pathname
+  );
 
   useEffect(() => {
     //! deleting the message that was seen from the array of unseen messages

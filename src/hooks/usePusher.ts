@@ -11,18 +11,34 @@ type CallbackType =
 export default function usePusher(
   channel: string,
   event: string,
-  callback: CallbackType
+  callback: CallbackType,
+  pathname?: string | null
 ) {
-  useEffect(() => {
-    // console.log('usePusher useEffect called');
-    pusherClient.subscribe(toPusherKey(channel));
+  if (pathname) {
+    useEffect(() => {
+      pusherClient.subscribe(toPusherKey(channel));
 
-    pusherClient.bind(event, callback);
+      pusherClient.bind(event, callback);
 
-    return () => {
-      pusherClient.unsubscribe(toPusherKey(channel));
+      return () => {
+        console.log('usePusher useEffect return called');
+        pusherClient.unsubscribe(toPusherKey(channel));
 
-      pusherClient.unbind(event, callback);
-    };
-  }, [callback, channel, event]);
+        pusherClient.unbind(event, callback);
+      };
+    }, [pathname]);
+  } else {
+    useEffect(() => {
+      console.log('usePusher useEffect called');
+      pusherClient.subscribe(toPusherKey(channel));
+
+      pusherClient.bind(event, callback);
+
+      return () => {
+        pusherClient.unsubscribe(toPusherKey(channel));
+
+        pusherClient.unbind(event, callback);
+      };
+    }, []);
+  }
 }
