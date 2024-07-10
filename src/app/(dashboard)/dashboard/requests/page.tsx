@@ -27,7 +27,7 @@ export default async function RequestsPage() {
       };
     })
   );
-
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
   return (
     <main className="pt-8">
       <h1 className="font-bold text-5xl mb-8">Add a friend</h1>
