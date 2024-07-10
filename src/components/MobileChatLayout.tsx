@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogBackdrop,
@@ -19,6 +19,7 @@ import SignOutButton from './SignOutButton';
 import { User } from '@/types/db';
 import { Session } from 'next-auth';
 import { SidebarOption } from '@/types/typing';
+import { usePathname } from 'next/navigation';
 
 interface MobileChatLayoutProps {
   friends: User[];
@@ -34,6 +35,11 @@ export default function MobileChatLayout({
   unseenRequestCount,
 }: MobileChatLayoutProps) {
   const [open, setOpen] = useState(false);
+
+  const pathname = usePathname();
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
   return (
     <div className="fixed bg-zinc-50 border-b border-zinc-200 top-0 inset-x-0 py-2 px-4">
       <div className="w-full flex justify-between items-center">
