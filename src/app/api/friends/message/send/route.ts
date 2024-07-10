@@ -34,6 +34,10 @@ export async function POST(request: Request) {
 
     const isFriend = friendsList.includes(friendId);
 
+    if (!isFriend) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const sender = JSON.parse(
       await fetchRedis('get', `user:${currentUserId}`)
     ) as User;
