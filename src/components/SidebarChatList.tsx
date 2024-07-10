@@ -1,9 +1,12 @@
 'use client';
+import usePusher from '@/hooks/usePusher';
 import { chatHrefConstructor } from '@/lib/util';
-import { Message, User } from '@/types/db';
+import { ExtendedMessage, Message, User } from '@/types/db';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import UnseenChatToast from './UnseenChatToast';
 
 interface SidebarChatListProps {
   sessionId: string;
@@ -17,6 +20,38 @@ export default function SidebarChatList({
   const router = useRouter();
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+
+  const newFriendHandler = () => {
+    router.refresh();
+  };
+
+  const chatHandler = (message: ExtendedMessage) => {
+    const shouldNotify =
+      pathname !==
+      `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
+
+    if (!shouldNotify) return;
+
+    console.log(message);
+
+    toast.custom((t) => {
+      return (
+        <UnseenChatToast
+          t={t}
+          senderImg={message.senderImg}
+          senderName={message.senderName}
+          sessionId={sessionId}
+          senderMessage={message.text}
+          senderId={message.senderId}
+        />
+      );
+    });
+
+    setUnseenMessages((prev) => [...prev, message]);
+  };
+
+  usePusher(`user:${sessionId}:chats`, 'new-message', chatHandler);
+  usePusher(`user:${sessionId}:friends`, 'new-friend', newFriendHandler);
 
   useEffect(() => {
     //! deleting the message that was seen from the array of unseen messages
