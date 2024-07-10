@@ -18,7 +18,7 @@ export default function ChatInput({ chatPartner, chatId }: ChatInputProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function sendMessage() {
-    if (!input) return;
+    if (!input.trim()) return;
     setIsLoading(true);
     try {
       await axios.post('/api/friends/message/send', {
