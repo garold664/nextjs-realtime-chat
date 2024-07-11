@@ -38,7 +38,11 @@ export default function Messages({
     [setMessages]
   );
 
-  usePusher(`chat:${chatId}`, 'incoming-message', messageHandler);
+  usePusher({
+    channel: `chat:${chatId}`,
+    event: 'incoming-message',
+    callback: messageHandler,
+  });
 
   return (
     <div

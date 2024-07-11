@@ -30,11 +30,11 @@ export default function FriendRequests({
     [setFriendRequests]
   );
 
-  usePusher(
-    `user:${sessionId}:incoming_friend_requests`,
-    'incoming_friend_request',
-    friendRequestsHandler
-  );
+  usePusher({
+    channel: `user:${sessionId}:incoming_friend_requests`,
+    event: 'incoming_friend_request',
+    callback: friendRequestsHandler,
+  });
 
   // useEffect(() => {
   //   pusherClient.subscribe(

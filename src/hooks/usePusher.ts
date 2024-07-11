@@ -9,23 +9,23 @@ type CallbackType =
   | ((message: ExtendedMessage) => void)
   | ((user: User) => void);
 
-export default function usePusher(
-  channel: string,
-  event: string,
-  callback: CallbackType,
-  pathname?: string | null
-) {
+export default function usePusher(action: {
+  channel: string;
+  event: string;
+  callback: CallbackType;
+  pathname?: string | null;
+}) {
   useEffect(() => {
     // console.log('usePusher useEffect called');
-    pusherClient.subscribe(toPusherKey(channel));
+    pusherClient.subscribe(toPusherKey(action.channel));
 
-    pusherClient.bind(event, callback);
+    pusherClient.bind(action.event, action.callback);
 
     return () => {
       // console.log('usePusher useEffect return called');
-      pusherClient.unsubscribe(toPusherKey(channel));
+      pusherClient.unsubscribe(toPusherKey(action.channel));
 
-      pusherClient.unbind(event, callback);
+      pusherClient.unbind(action.event, action.callback);
     };
-  }, [pathname, channel, event, callback]);
+  }, [action]);
 }
