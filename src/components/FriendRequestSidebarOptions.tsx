@@ -24,11 +24,16 @@ export default function FriendRequestSidebarOptions({
     setUnseenRequestCount((prev) => prev + 1);
   };
 
+  const addFriendHandler = () => {
+    setUnseenRequestCount((prev) => prev - 1);
+  };
+
   usePusher(
     `user:${sessionId}:incoming_friend_requests`,
     'incoming_friend_request',
     friendRequestsHandler
   );
+  usePusher(`user:${sessionId}:friends`, 'new-friend', addFriendHandler);
 
   // useEffect(() => {
   //   pusherClient.subscribe(
