@@ -38,6 +38,11 @@ export default function FriendRequestSidebarOptions({
       channel: `user:${sessionId}:friends`,
       event: 'new-friend',
       callback: addFriendHandler,
+    },
+    {
+      channel: `user:${sessionId}:friends`,
+      event: 'deny-friend',
+      callback: addFriendHandler,
     }
   );
 
