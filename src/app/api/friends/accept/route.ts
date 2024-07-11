@@ -38,20 +38,33 @@ export async function POST(request: Request) {
       return new Response('No friend request', { status: 400 });
     }
 
-    pusherServer.trigger(
-      toPusherKey(`user:${friendId}:friends`),
-      'new-friend',
-      {}
-    );
+    const [userRaw, friendRaw] = (await Promise.all([
+      fetchRedis('get', `user:${currentUserId}`),
+      fetchRedis('get', `user:${friendId}`),
+    ])) as [string, string];
 
-    //! accept friend request
-    await db.sadd(`user:${currentUserId}:friends`, friendId);
-    await db.sadd(`user:${friendId}:friends`, currentUserId);
+    const [user, friend] = [JSON.parse(userRaw), JSON.parse(friendRaw)];
 
-    //! remove friend request from db
+    //! doing all this actions simultaneously, because they are all independent
+    await Promise.all([
+      pusherServer.trigger(
+        toPusherKey(`user:${friendId}:friends`),
+        'new-friend',
+        user
+      ),
+      pusherServer.trigger(
+        toPusherKey(`user:${currentUserId}:friends`),
+        'new-friend',
+        friend
+      ),
+      //! accept friend request
+      await db.sadd(`user:${currentUserId}:friends`, friendId),
+      await db.sadd(`user:${friendId}:friends`, currentUserId),
+      //! remove friend request from db
+      await db.srem(`user:${currentUserId}:incoming_friend_requests`, friendId),
+    ]);
 
     // TODO: await db.srem(`user:${currentUserId}:outbound_friend_requests`, friendId);
-    await db.srem(`user:${currentUserId}:incoming_friend_requests`, friendId);
 
     return new Response('OK', { status: 200 });
   } catch (error) {
