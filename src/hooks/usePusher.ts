@@ -1,12 +1,13 @@
 import { pusherClient } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/util';
-import { ExtendedMessage, Message } from '@/types/db';
+import { ExtendedMessage, Message, User } from '@/types/db';
 import { useEffect } from 'react';
 
 type CallbackType =
   | (({ senderId, senderEmail }: IncomingFriendRequest) => void)
   | ((message: Message) => void)
-  | ((message: ExtendedMessage) => void);
+  | ((message: ExtendedMessage) => void)
+  | ((user: User) => void);
 
 export default function usePusher(
   channel: string,

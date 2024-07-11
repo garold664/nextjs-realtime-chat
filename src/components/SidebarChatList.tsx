@@ -20,10 +20,14 @@ export default function SidebarChatList({
   const router = useRouter();
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+  const [activeChats, setActiveChats] = useState<User[]>(friends);
 
-  const newFriendHandler = useCallback(() => {
-    router.refresh();
-  }, [router]);
+  const newFriendHandler = useCallback(
+    (newFriend: User) => {
+      setActiveChats((prev) => [...prev, newFriend]);
+    },
+    [router]
+  );
 
   const chatHandler = useCallback(
     (message: ExtendedMessage) => {
@@ -69,7 +73,7 @@ export default function SidebarChatList({
   }, [pathname]);
   return (
     <ul role="list" className="max-h-[25rem] overflow-y-auto -mx-2 space-y-1">
-      {friends.sort().map((friend) => {
+      {activeChats.sort().map((friend) => {
         //! number of unseen messages from one friend
         const unseenMessagesCount = unseenMessages.filter(
           (msg) => msg.senderId === friend.id
