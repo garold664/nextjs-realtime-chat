@@ -24,6 +24,7 @@ export default function SidebarChatList({
 
   const newFriendHandler = useCallback(
     (newFriend: User) => {
+      // console.log('new friend');
       setActiveChats((prev) => [...prev, newFriend]);
     },
     [router]
@@ -55,18 +56,20 @@ export default function SidebarChatList({
     [pathname, sessionId]
   );
 
-  usePusher({
-    channel: `user:${sessionId}:chats`,
-    event: 'new-message',
-    callback: chatHandler,
-    pathname,
-  });
-  usePusher({
-    channel: `user:${sessionId}:friends`,
-    event: 'new-friend',
-    callback: newFriendHandler,
-    pathname,
-  });
+  usePusher(
+    {
+      channel: `user:${sessionId}:chats`,
+      event: 'new-message',
+      callback: chatHandler,
+      pathname,
+    },
+    {
+      channel: `user:${sessionId}:friends`,
+      event: 'new-friend',
+      callback: newFriendHandler,
+      pathname,
+    }
+  );
 
   useEffect(() => {
     //! deleting the message that was seen from the array of unseen messages

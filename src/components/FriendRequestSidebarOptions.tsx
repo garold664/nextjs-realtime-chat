@@ -28,16 +28,18 @@ export default function FriendRequestSidebarOptions({
     setUnseenRequestCount((prev) => prev - 1);
   };
 
-  usePusher({
-    channel: `user:${sessionId}:incoming_friend_requests`,
-    event: 'incoming_friend_request',
-    callback: friendRequestsHandler,
-  });
-  usePusher({
-    channel: `user:${sessionId}:friends`,
-    event: 'new-friend',
-    callback: addFriendHandler,
-  });
+  usePusher(
+    {
+      channel: `user:${sessionId}:incoming_friend_requests`,
+      event: 'incoming_friend_request',
+      callback: friendRequestsHandler,
+    },
+    {
+      channel: `user:${sessionId}:friends`,
+      event: 'new-friend',
+      callback: addFriendHandler,
+    }
+  );
 
   // useEffect(() => {
   //   pusherClient.subscribe(
