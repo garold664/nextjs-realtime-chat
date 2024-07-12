@@ -28,6 +28,10 @@ export default function FriendRequestSidebarOptions({
     setUnseenRequestCount((prev) => prev - 1);
   };
 
+  const removeFriendHandler = () => {
+    setUnseenRequestCount((prev) => prev - 1);
+  };
+
   usePusher(
     {
       channel: `user:${sessionId}:incoming_friend_requests`,
@@ -42,7 +46,7 @@ export default function FriendRequestSidebarOptions({
     {
       channel: `user:${sessionId}:friends`,
       event: 'deny-friend',
-      callback: addFriendHandler,
+      callback: removeFriendHandler,
     }
   );
 
