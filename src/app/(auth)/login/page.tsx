@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-const Page = () => {
+export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   async function loginWithGoogle() {
     setIsLoading(true);
@@ -71,6 +71,4 @@ const Page = () => {
       </Link>
     </>
   );
-};
-
-export default Page;
+}

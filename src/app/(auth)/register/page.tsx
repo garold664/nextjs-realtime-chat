@@ -5,11 +5,24 @@ import Button from '@/components/ui/Button';
 import FormControl from '@/components/ui/FormControl';
 import GoogleLogo from '@/components/ui/GoogleLogo';
 import { Lock, Mail, User } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
+  async function loginWithGoogle() {
+    setIsLoading(true);
+    try {
+      // throw new Error('Not implemented');
+      await signIn('google');
+    } catch (error) {
+      toast.error('Could not sign in');
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
     <>
       <div className="flex flex-col items-center gap-8">
@@ -53,7 +66,7 @@ export default function RegisterPage() {
         isLoading={isLoading}
         type="button"
         className="max-w-sm mx-auto w-full"
-        // onClick={loginWithGoogle}
+        onClick={loginWithGoogle}
       >
         {!isLoading && <GoogleLogo />}
         Google
