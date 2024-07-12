@@ -4,42 +4,37 @@ import { Icons } from '@/components/Icons';
 import Button from '@/components/ui/Button';
 import FormControl from '@/components/ui/FormControl';
 import GoogleLogo from '@/components/ui/GoogleLogo';
-import { Lock, User } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import { Lock, Mail, User } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import React, { useState } from 'react';
 
-const Page = () => {
+export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
-  async function loginWithGoogle() {
-    setIsLoading(true);
-    try {
-      // throw new Error('Not implemented');
-      await signIn('google');
-    } catch (error) {
-      toast.error('Could not sign in');
-    } finally {
-      setIsLoading(false);
-    }
-  }
   return (
     <>
       <div className="flex flex-col items-center gap-8">
         <Icons.Logo />
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Sign up to your account
         </h2>
       </div>
 
       <form action="" className="flex flex-col gap-6 w-full">
+        <FormControl
+          label="Name"
+          placeholder="Type your name"
+          type="text"
+          name="name"
+          id="name"
+          Icon={User}
+        />
         <FormControl
           label="Email"
           placeholder="Type your email"
           type="email"
           name="email"
           id="email"
-          Icon={User}
+          Icon={Mail}
         />
         <FormControl
           label="Password"
@@ -49,28 +44,26 @@ const Page = () => {
           id="password"
           Icon={Lock}
         />
-        <Button>Login</Button>
+        <Button>Sign up</Button>
       </form>
 
-      <p>Or Sign In using</p>
+      <p>Or Sign Up using</p>
 
       <Button
         isLoading={isLoading}
         type="button"
         className="max-w-sm mx-auto w-full"
-        onClick={loginWithGoogle}
+        // onClick={loginWithGoogle}
       >
         {!isLoading && <GoogleLogo />}
         Google
       </Button>
       <Link
-        href="/register"
+        href="/login"
         className="text-blue-900 hover:underline underline-offset-2"
       >
-        Don't have an account?
+        Already have an account?
       </Link>
     </>
   );
-};
-
-export default Page;
+}
