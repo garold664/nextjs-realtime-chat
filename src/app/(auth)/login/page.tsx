@@ -6,6 +6,7 @@ import FormControl from '@/components/ui/FormControl';
 import GoogleLogo from '@/components/ui/GoogleLogo';
 import { Lock, User } from 'lucide-react';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -52,6 +53,8 @@ const Page = () => {
           <Button>Login</Button>
         </form>
 
+        <p>Or Sign In using</p>
+
         <Button
           isLoading={isLoading}
           type="button"
@@ -61,6 +64,9 @@ const Page = () => {
           {!isLoading && <GoogleLogo />}
           Google
         </Button>
+        <Link href="/register" className="hover:underline underline-offset-2">
+          Don't have an account?
+        </Link>
       </div>
     </div>
   );
