@@ -15,7 +15,7 @@ interface FormProps {
   linkLabel: string;
   link: string;
 }
-export default function Form({
+export default function AuthForm({
   children,
   title,
   submitLabel,
