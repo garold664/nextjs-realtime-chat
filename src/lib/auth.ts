@@ -4,7 +4,7 @@ import { db } from './db';
 import GoogleProvider from 'next-auth/providers/google';
 import { User } from '@/types/db';
 import { fetchRedis } from '@/helpers/redis';
-import NextAuth from 'next-auth/next';
+import Credentials from 'next-auth/providers/credentials';
 
 function getGoogleCredentials() {
   const credentials =
@@ -31,6 +31,11 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
   providers: [
+    Credentials({
+      async authorize(credentials) {
+        return;
+      },
+    }),
     GoogleProvider({
       clientId: getGoogleCredentials().clientId,
       clientSecret: getGoogleCredentials().clientSecret,
