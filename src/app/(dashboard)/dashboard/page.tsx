@@ -60,7 +60,7 @@ const Page = async () => {
                     referrerPolicy="no-referrer"
                     className="rounded-full"
                     alt={`${friend.name} profile picture`}
-                    src={friend.image}
+                    src={friend.image || '/images/avatar.png'}
                     fill
                   />
                 </div>

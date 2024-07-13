@@ -102,8 +102,8 @@ export default function Messages({
                   <Image
                     src={
                       isCurrentUser
-                        ? (sessionImage as string)
-                        : chatPartnerImage
+                        ? sessionImage || ('/images/avatar.png' as string)
+                        : chatPartnerImage || ('/images/avatar.png' as string)
                     }
                     alt="avatar"
                     fill

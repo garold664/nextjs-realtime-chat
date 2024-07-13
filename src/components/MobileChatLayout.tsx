@@ -143,7 +143,7 @@ export default function MobileChatLayout({
                                 fill
                                 referrerPolicy="no-referrer"
                                 className="rounded-full"
-                                src={session.user.image || ''}
+                                src={session.user.image || '/images/avatar.png'}
                                 alt="Your profile picture"
                               />
                             </div>

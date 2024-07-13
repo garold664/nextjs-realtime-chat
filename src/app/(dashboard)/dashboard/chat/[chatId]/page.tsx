@@ -67,7 +67,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
               <Image
                 fill
                 referrerPolicy="no-referrer"
-                src={chatPartner.image}
+                src={chatPartner.image || '/images/avatar.png'}
                 alt={`${chatPartner.name} profile picture`}
                 className="rounded-full"
               />

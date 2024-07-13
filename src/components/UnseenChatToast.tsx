@@ -39,7 +39,7 @@ export default function UnseenChatToast({
                 fill
                 referrerPolicy="no-referrer"
                 className="rounded-full"
-                src={senderImg}
+                src={senderImg || '/images/avatar.png'}
                 alt={`${senderName} profile picture`}
               />
             </div>
