@@ -29,6 +29,7 @@ export default function LoginPage() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       // const responseData = await axios.post('/api/auth/login', validatedData);
       // console.dir(responseData.data);
+      setShowSuccessState(true);
     } catch (error) {
       setShowSuccessState(false);
       if (error instanceof z.ZodError) {
@@ -42,8 +43,6 @@ export default function LoginPage() {
         return;
       }
       setError('root', { message: 'Something went wrong' });
-    } finally {
-      setShowSuccessState(true);
     }
   };
   return (
@@ -72,6 +71,15 @@ export default function LoginPage() {
           registerProps={register('password')}
           Icon={Lock}
         />
+        {showSuccessState && (
+          <p className="text-green-600 text-sm mt-1">{'Success! ✅'}</p>
+        )}
+        {!showSuccessState &&
+          Object.entries(errors).map(([key, value]) => (
+            <p key={key} className="text-red-600 text-sm mt-1">
+              {value.message}
+            </p>
+          ))}
       </AuthForm>
     </>
   );
