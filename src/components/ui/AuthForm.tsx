@@ -1,12 +1,14 @@
 import { Icons } from '../Icons';
-import FormControl from './FormControl';
-import { Lock } from 'lucide-react';
+
 import Link from 'next/link';
 import GoogleLogo from './GoogleLogo';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import Button from './Button';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerValidator } from '@/lib/validations/register-validator';
 
 interface FormProps {
   children: React.ReactNode;
@@ -14,6 +16,7 @@ interface FormProps {
   submitLabel: string;
   linkLabel: string;
   link: string;
+  onSubmit: FormEventHandler<HTMLFormElement>;
 }
 export default function AuthForm({
   children,
@@ -21,8 +24,10 @@ export default function AuthForm({
   submitLabel,
   linkLabel,
   link,
+  onSubmit,
 }: FormProps) {
   const [isLoading, setIsLoading] = useState(false);
+
   async function loginWithGoogle() {
     setIsLoading(true);
     try {
@@ -34,6 +39,7 @@ export default function AuthForm({
       setIsLoading(false);
     }
   }
+
   return (
     <>
       <div className="flex flex-col items-center gap-8">
@@ -43,9 +49,9 @@ export default function AuthForm({
         </h2>
       </div>
 
-      <form action="" className="flex flex-col gap-6 w-full">
+      <form onSubmit={onSubmit} className="flex flex-col gap-6 w-full">
         {children}
-        <Button>{submitLabel}</Button>
+        <Button type="submit">{submitLabel}</Button>
       </form>
 
       <p>Or Sign In using</p>

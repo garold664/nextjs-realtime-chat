@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { error } from 'console';
 
 type FormData = z.infer<typeof addFriendValidator>;
 
@@ -48,6 +47,8 @@ export default function AddFriendButton() {
   const onSubmit = (data: FormData) => {
     addFriend(data.email);
   };
+
+  // console.log(register('email'));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-sm">
