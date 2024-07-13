@@ -17,6 +17,7 @@ interface FormProps {
   linkLabel: string;
   link: string;
   onSubmit: FormEventHandler<HTMLFormElement>;
+  isSubmitting: boolean;
 }
 export default function AuthForm({
   children,
@@ -25,6 +26,7 @@ export default function AuthForm({
   linkLabel,
   link,
   onSubmit,
+  isSubmitting,
 }: FormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,7 +53,9 @@ export default function AuthForm({
 
       <form onSubmit={onSubmit} className="flex flex-col gap-6 w-full">
         {children}
-        <Button type="submit">{submitLabel}</Button>
+        <Button type="submit" isLoading={isSubmitting}>
+          {submitLabel}
+        </Button>
       </form>
 
       <p>Or Sign In using</p>

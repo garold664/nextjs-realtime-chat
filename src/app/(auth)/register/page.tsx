@@ -15,6 +15,7 @@ import { z } from 'zod';
 
 export default function RegisterPage() {
   const [showSuccessState, setShowSuccessState] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -32,12 +33,12 @@ export default function RegisterPage() {
     try {
       setShowSuccessState(true);
       const validatedData = registerValidator.parse(data);
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const responseData = await axios.post(
         '/api/auth/register',
         validatedData
       );
-      // console.dir(responseData.data);
+      console.dir(responseData.data);
     } catch (error) {
       setShowSuccessState(false);
       if (error instanceof z.ZodError) {
@@ -62,6 +63,7 @@ export default function RegisterPage() {
         link="/login"
         linkLabel="Already have an account?"
         onSubmit={handleSubmit(onSubmit)}
+        isSubmitting={isSubmitting}
       >
         <FormControl
           label="Name"
