@@ -4,7 +4,6 @@ import AuthForm from '@/components/ui/AuthForm';
 import FormControl from '@/components/ui/FormControl';
 import { LoginSchema, loginValidator } from '@/lib/validations/login-validator';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError } from 'axios';
 import { Lock, User } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
@@ -27,19 +26,18 @@ export default function LoginPage() {
     try {
       const validatedData = loginValidator.parse(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      // const responseData = await axios.post('/api/auth/login', validatedData);
-      // console.dir(responseData.data);
+      await signIn('credentials', {
+        ...validatedData,
+        redirect: true,
+        redirectTo: '/dashboard',
+      });
+
       setShowSuccessState(true);
     } catch (error) {
       setShowSuccessState(false);
       if (error instanceof z.ZodError) {
         setError('root', { message: error.message });
         // console.log(errors);
-        return;
-      }
-
-      if (error instanceof AxiosError) {
-        setError('root', { message: error.response?.data });
         return;
       }
       setError('root', { message: 'Something went wrong' });
