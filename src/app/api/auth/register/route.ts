@@ -10,6 +10,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, name, password } = registerValidator.parse(body);
 
+    const existingUser = await db.get(`user:email:${email}`);
+
+    if (existingUser) {
+      return new Response('User already exists', { status: 409 });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const userId = nanoid();
@@ -18,8 +24,12 @@ export async function POST(request: Request) {
       email: email,
       name: name,
       password: hashedPassword,
+      id: userId,
+      image: '',
     };
+
     await db.set(`user:${userId}`, userData);
+    await db.set(`user:email:${email}`, userId);
     // return Response.json(userData);
     // return new Response('something went wrong', { status: 500 });
     return new Response('Ok', { status: 200 });
