@@ -1,17 +1,51 @@
 'use client';
 
-import { Icons } from '@/components/Icons';
 import AuthForm from '@/components/ui/AuthForm';
-import Button from '@/components/ui/Button';
 import FormControl from '@/components/ui/FormControl';
-import GoogleLogo from '@/components/ui/GoogleLogo';
+import { LoginSchema, loginValidator } from '@/lib/validations/login-validator';
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios, { AxiosError } from 'axios';
 import { Lock, User } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export default function LoginPage() {
+  const [showSuccessState, setShowSuccessState] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginValidator),
+  });
+
+  const onSubmit = async (data: LoginSchema) => {
+    try {
+      const validatedData = loginValidator.parse(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // const responseData = await axios.post('/api/auth/login', validatedData);
+      // console.dir(responseData.data);
+    } catch (error) {
+      setShowSuccessState(false);
+      if (error instanceof z.ZodError) {
+        setError('root', { message: error.message });
+        // console.log(errors);
+        return;
+      }
+
+      if (error instanceof AxiosError) {
+        setError('root', { message: error.response?.data });
+        return;
+      }
+      setError('root', { message: 'Something went wrong' });
+    } finally {
+      setShowSuccessState(true);
+    }
+  };
   return (
     <>
       <AuthForm
@@ -19,21 +53,23 @@ export default function LoginPage() {
         submitLabel="Login"
         link="/register"
         linkLabel="Don't have an account?"
+        onSubmit={handleSubmit(onSubmit)}
+        isSubmitting={isSubmitting}
       >
         <FormControl
           label="Email"
           placeholder="Type your email"
           type="email"
-          name="email"
           id="email"
+          registerProps={register('email')}
           Icon={User}
         />
         <FormControl
           label="Password"
           placeholder="Type your password"
           type="password"
-          name="password"
           id="password"
+          registerProps={register('password')}
           Icon={Lock}
         />
       </AuthForm>

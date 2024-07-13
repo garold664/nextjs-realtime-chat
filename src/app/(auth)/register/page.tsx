@@ -9,7 +9,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
 import { Lock, Mail, User } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -25,20 +25,12 @@ export default function RegisterPage() {
     resolver: zodResolver(registerValidator),
   });
 
-  useEffect(() => {
-    console.log(Object.entries(errors));
-  });
-
   const onSubmit = async (data: RegisterSchema) => {
     try {
-      setShowSuccessState(true);
       const validatedData = registerValidator.parse(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      const responseData = await axios.post(
-        '/api/auth/register',
-        validatedData
-      );
-      console.dir(responseData.data);
+      await axios.post('/api/auth/register', validatedData);
+      setShowSuccessState(true);
     } catch (error) {
       setShowSuccessState(false);
       if (error instanceof z.ZodError) {
