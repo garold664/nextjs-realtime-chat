@@ -1,18 +1,28 @@
-import { registerValidator } from '@/lib/validations/register-validator';
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
+
+import { db } from '@/lib/db';
+import { registerValidator } from '@/lib/validations/register-validator';
+import { nanoid } from 'nanoid';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { email, name, password } = registerValidator.parse(body);
 
-    const responseData = {
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const userId = nanoid();
+
+    const userData = {
       email: email,
       name: name,
-      password: password,
+      password: hashedPassword,
     };
-    return Response.json(responseData);
+    await db.set(`user:${userId}`, userData);
+    // return Response.json(userData);
     // return new Response('something went wrong', { status: 500 });
+    return new Response('Ok', { status: 200 });
   } catch (error) {
     console.log(error);
 
