@@ -4,7 +4,7 @@ import { db } from './db';
 import GoogleProvider from 'next-auth/providers/google';
 import { User } from '@/types/db';
 import { fetchRedis } from '@/helpers/redis';
-import Credentials from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginValidator } from './validations/login-validator';
 import bcrypt from 'bcryptjs';
 function getGoogleCredentials() {
@@ -32,22 +32,23 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
   providers: [
-    Credentials({
-      async authorize(credentials) {
+    CredentialsProvider({
+      credentials: {},
+      async authorize(credentials, request) {
         const validatedFields = loginValidator.safeParse(credentials);
         if (!validatedFields.success) return null;
 
         const { email, password } = validatedFields.data;
         const userId = (await db.get(`user:email:${email}`)) as string;
 
-        console.log('userId: ', userId);
+        // console.log('userId: ', userId);
         if (!userId) return null;
 
         const user = (await db.get(`user:${userId}`)) as User;
-        if (!user) return null;
+        if (!user || !user.password) return null;
         const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log('user: ');
-        console.log(user);
+        // console.log('user: ');
+        // console.log(user);
         return user;
       },
     }),
