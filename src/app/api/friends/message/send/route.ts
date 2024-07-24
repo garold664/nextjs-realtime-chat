@@ -13,6 +13,8 @@ export async function POST(request: Request) {
   try {
     const { text, chatId }: { text: string; chatId: string } =
       await request.json();
+
+    console.log('msgTest: ' + text);
     const session = await getServerSession(authOptions);
     if (!session) return new Response('Unauthorized', { status: 401 });
 
@@ -53,6 +55,7 @@ export async function POST(request: Request) {
     };
 
     const message = messageValidator.parse(messageData);
+    console.log(message);
 
     pusherServer.trigger(
       toPusherKey(`chat:${chatId}`),
