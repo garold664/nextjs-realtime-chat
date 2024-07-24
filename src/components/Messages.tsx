@@ -1,12 +1,13 @@
 'use client';
 
-import { cn } from '@/lib/util';
+import { cn, toPusherKey } from '@/lib/util';
 import { Message } from '@/types/db';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
 import usePusher from '@/hooks/usePusher';
+import { pusherClient } from '@/lib/pusher';
 
 interface MessagesProps {
   initialMessages: Message[];
@@ -31,18 +32,32 @@ export default function Messages({
     return format(timestamp, 'HH:mm');
   };
 
-  const messageHandler = useCallback(
-    (message: Message) => {
-      setMessages((prev) => [message, ...prev]);
-    },
-    [setMessages]
-  );
+  // const messageHandler = useCallback(
+  //   (message: Message) => {
+  //     setMessages((prev) => [message, ...prev]);
+  //   },
+  //   [setMessages]
+  // );
 
-  usePusher({
-    channel: `chat:${chatId}`,
-    event: 'incoming-message',
-    callback: messageHandler,
-  });
+  // usePusher({
+  //   channel: `chat:${chatId}`,
+  //   event: 'incoming-message',
+  //   callback: messageHandler,
+  // });
+
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
+
+    const messageHandler = (message: Message) => {
+      setMessages((prev) => [message, ...prev]);
+    };
+    pusherClient.bind('incoming-message', messageHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
+      pusherClient.unbind('incoming-message', messageHandler);
+    };
+  }, [chatId]);
 
   return (
     <div
