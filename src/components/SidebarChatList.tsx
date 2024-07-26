@@ -1,12 +1,13 @@
 'use client';
 import usePusher from '@/hooks/usePusher';
-import { chatHrefConstructor } from '@/lib/util';
+import { chatHrefConstructor, toPusherKey } from '@/lib/util';
 import { ExtendedMessage, Message, User } from '@/types/db';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import UnseenChatToast from './UnseenChatToast';
+import { pusherClient } from '@/lib/pusher';
 
 interface SidebarChatListProps {
   sessionId: string;
@@ -30,46 +31,89 @@ export default function SidebarChatList({
     [router]
   );
 
-  const chatHandler = useCallback(
-    (message: ExtendedMessage) => {
+  // const chatHandler = useCallback(
+  //   (message: ExtendedMessage) => {
+  //     const shouldNotify =
+  //       pathname !==
+  //       `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
+
+  //     if (!shouldNotify) return;
+
+  //     toast.custom((t) => {
+  //       return (
+  //         <UnseenChatToast
+  //           t={t}
+  //           senderImg={message.senderImg}
+  //           senderName={message.senderName}
+  //           sessionId={sessionId}
+  //           senderMessage={message.text}
+  //           senderId={message.senderId}
+  //         />
+  //       );
+  //     });
+
+  //     setUnseenMessages((prev) => [...prev, message]);
+  //   },
+  //   [pathname, sessionId]
+  // );
+
+  // usePusher(
+  //   {
+  //     channel: `user:${sessionId}:chats`,
+  //     event: 'new-message',
+  //     callback: chatHandler,
+  //     pathname,
+  //   },
+  //   {
+  //     channel: `user:${sessionId}:friends`,
+  //     event: 'new-friend',
+  //     callback: newFriendHandler,
+  //     pathname,
+  //   }
+  // );
+
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+
+    const newFriendHandler = (newFriend: User) => {
+      console.log('received new user', newFriend);
+      setActiveChats((prev) => [...prev, newFriend]);
+    };
+
+    const chatHandler = (message: ExtendedMessage) => {
       const shouldNotify =
         pathname !==
         `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
 
       if (!shouldNotify) return;
 
-      toast.custom((t) => {
-        return (
-          <UnseenChatToast
-            t={t}
-            senderImg={message.senderImg}
-            senderName={message.senderName}
-            sessionId={sessionId}
-            senderMessage={message.text}
-            senderId={message.senderId}
-          />
-        );
-      });
+      // should be notified
+      toast.custom((t) => (
+        <UnseenChatToast
+          t={t}
+          sessionId={sessionId}
+          senderId={message.senderId}
+          senderImg={message.senderImg}
+          senderMessage={message.text}
+          senderName={message.senderName}
+        />
+      ));
 
       setUnseenMessages((prev) => [...prev, message]);
-    },
-    [pathname, sessionId]
-  );
+    };
 
-  usePusher(
-    {
-      channel: `user:${sessionId}:chats`,
-      event: 'new-message',
-      callback: chatHandler,
-      pathname,
-    },
-    {
-      channel: `user:${sessionId}:friends`,
-      event: 'new-friend',
-      callback: newFriendHandler,
-      pathname,
-    }
-  );
+    pusherClient.bind('new-message', chatHandler);
+    pusherClient.bind('new-friend', newFriendHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+
+      pusherClient.unbind('new-message', chatHandler);
+      pusherClient.unbind('new-friend', newFriendHandler);
+    };
+  }, [pathname, sessionId, router]);
 
   useEffect(() => {
     //! deleting the message that was seen from the array of unseen messages
