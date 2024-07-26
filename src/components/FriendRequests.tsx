@@ -23,40 +23,40 @@ export default function FriendRequests({
 
   const router = useRouter();
 
-  const friendRequestsHandler = useCallback(
-    ({ senderId, senderEmail }: IncomingFriendRequest) => {
-      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-    },
-    [setFriendRequests]
-  );
-
-  usePusher({
-    channel: `user:${sessionId}:incoming_friend_requests`,
-    event: 'incoming_friend_request',
-    callback: friendRequestsHandler,
-  });
-
-  // useEffect(() => {
-  //   pusherClient.subscribe(
-  //     toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-  //   );
-
-  //   const friendRequestsHandler = ({
-  //     senderId,
-  //     senderEmail,
-  //   }: IncomingFriendRequest) => {
+  // const friendRequestsHandler = useCallback(
+  //   ({ senderId, senderEmail }: IncomingFriendRequest) => {
   //     setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-  //   };
-  //   pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+  //   },
+  //   [setFriendRequests]
+  // );
 
-  //   return () => {
-  //     pusherClient.unsubscribe(
-  //       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-  //     );
+  // usePusher({
+  //   channel: `user:${sessionId}:incoming_friend_requests`,
+  //   event: 'incoming_friend_request',
+  //   callback: friendRequestsHandler,
+  // });
 
-  //     pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
-  //   };
-  // }, [incomingFriendRequests]);
+  useEffect(() => {
+    pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    );
+
+    const friendRequestsHandler = ({
+      senderId,
+      senderEmail,
+    }: IncomingFriendRequest) => {
+      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+    };
+    pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      );
+
+      pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
+    };
+  }, [incomingFriendRequests]);
 
   const handleFriendRequest = async (
     action: 'accept' | 'deny',
