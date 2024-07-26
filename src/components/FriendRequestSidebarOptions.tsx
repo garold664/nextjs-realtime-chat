@@ -28,27 +28,55 @@ export default function FriendRequestSidebarOptions({
     setUnseenRequestCount((prev) => prev - 1);
   };
 
-  const removeFriendHandler = () => {
-    setUnseenRequestCount((prev) => prev - 1);
-  };
+  // const removeFriendHandler = () => {
+  //   setUnseenRequestCount((prev) => prev - 1);
+  // };
 
-  usePusher(
-    {
-      channel: `user:${sessionId}:incoming_friend_requests`,
-      event: 'incoming_friend_request',
-      callback: friendRequestsHandler,
-    },
-    {
-      channel: `user:${sessionId}:friends`,
-      event: 'new-friend',
-      callback: addFriendHandler,
-    },
-    {
-      channel: `user:${sessionId}:friends`,
-      event: 'deny-friend',
-      callback: removeFriendHandler,
-    }
-  );
+  // usePusher(
+  //   {
+  //     channel: `user:${sessionId}:incoming_friend_requests`,
+  //     event: 'incoming_friend_request',
+  //     callback: friendRequestsHandler,
+  //   },
+  //   {
+  //     channel: `user:${sessionId}:friends`,
+  //     event: 'new-friend',
+  //     callback: addFriendHandler,
+  //   },
+  //   {
+  //     channel: `user:${sessionId}:friends`,
+  //     event: 'deny-friend',
+  //     callback: removeFriendHandler,
+  //   }
+  // );
+
+  useEffect(() => {
+    pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    );
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+
+    const friendRequestHandler = () => {
+      setUnseenRequestCount((prev) => prev + 1);
+    };
+
+    const addedFriendHandler = () => {
+      setUnseenRequestCount((prev) => prev - 1);
+    };
+
+    pusherClient.bind('incoming_friend_requests', friendRequestHandler);
+    pusherClient.bind('new-friend', addedFriendHandler);
+
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      );
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+
+      pusherClient.unbind('new-friend', addedFriendHandler);
+      pusherClient.unbind('incoming_friend_requests', friendRequestHandler);
+    };
+  }, [sessionId]);
 
   // useEffect(() => {
   //   pusherClient.subscribe(
