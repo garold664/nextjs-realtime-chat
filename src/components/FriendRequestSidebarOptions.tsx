@@ -29,61 +29,61 @@ export default function FriendRequestSidebarOptions({
     setUnseenRequestCount((prev) => prev - 1);
   };
 
-  // const removeFriendHandler = () => {
-  //   setUnseenRequestCount((prev) => prev - 1);
-  // };
+  const removeFriendHandler = () => {
+    setUnseenRequestCount((prev) => prev - 1);
+  };
 
-  // usePusher(
-  //   {
-  //     channel: `user:${sessionId}:incoming_friend_requests`,
-  //     event: 'incoming_friend_request',
-  //     callback: friendRequestsHandler,
-  //   },
-  //   {
-  //     channel: `user:${sessionId}:friends`,
-  //     event: 'new-friend',
-  //     callback: addFriendHandler,
-  //   },
-  //   {
-  //     channel: `user:${sessionId}:friends`,
-  //     event: 'deny-friend',
-  //     callback: removeFriendHandler,
-  //   }
-  // );
+  usePusher(
+    {
+      channel: `user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
+      event: pusherEvents.INCOMING_FRIEND_REQUEST,
+      callback: friendRequestsHandler,
+    },
+    {
+      channel: `user:${sessionId}:friends`,
+      event: pusherEvents.NEW_FRIEND,
+      callback: addFriendHandler,
+    },
+    {
+      channel: `user:${sessionId}:friends`,
+      event: pusherEvents.DENY_FRIEND,
+      callback: removeFriendHandler,
+    }
+  );
 
-  useEffect(() => {
-    pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
-    );
-    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+  // useEffect(() => {
+  //   pusherClient.subscribe(
+  //     toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
+  //   );
+  //   pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
 
-    const friendRequestHandler = () => {
-      setUnseenRequestCount((prev) => prev + 1);
-    };
+  //   const friendRequestHandler = () => {
+  //     setUnseenRequestCount((prev) => prev + 1);
+  //   };
 
-    const addedFriendHandler = () => {
-      setUnseenRequestCount((prev) => prev - 1);
-    };
+  //   const addedFriendHandler = () => {
+  //     setUnseenRequestCount((prev) => prev - 1);
+  //   };
 
-    pusherClient.bind(
-      pusherEvents.INCOMING_FRIEND_REQUEST,
-      friendRequestHandler
-    );
-    pusherClient.bind(pusherEvents.NEW_FRIEND, addedFriendHandler);
+  //   pusherClient.bind(
+  //     pusherEvents.INCOMING_FRIEND_REQUEST,
+  //     friendRequestHandler
+  //   );
+  //   pusherClient.bind(pusherEvents.NEW_FRIEND, addedFriendHandler);
 
-    return () => {
-      pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
-      );
-      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+  //   return () => {
+  //     pusherClient.unsubscribe(
+  //       toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
+  //     );
+  //     pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
 
-      pusherClient.unbind(pusherEvents.NEW_FRIEND, addedFriendHandler);
-      pusherClient.unbind(
-        pusherEvents.INCOMING_FRIEND_REQUEST,
-        friendRequestHandler
-      );
-    };
-  }, [sessionId]);
+  //     pusherClient.unbind(pusherEvents.NEW_FRIEND, addedFriendHandler);
+  //     pusherClient.unbind(
+  //       pusherEvents.INCOMING_FRIEND_REQUEST,
+  //       friendRequestHandler
+  //     );
+  //   };
+  // }, [sessionId]);
 
   return (
     <Link

@@ -6,8 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
-// import usePusher from '@/hooks/usePusher';
-import { pusherClient } from '@/lib/pusher';
+import usePusher from '@/hooks/usePusher';
+// import { pusherClient } from '@/lib/pusher';
 import pusherEvents from '@/helpers/pusherEvents';
 
 interface MessagesProps {
@@ -33,33 +33,33 @@ export default function Messages({
     return format(timestamp, 'HH:mm');
   };
 
-  // const messageHandler = useCallback(
-  //   (message: Message) => {
-  //     setMessages((prev) => [message, ...prev]);
-  //   },
-  //   [setMessages]
-  // );
-
-  // usePusher({
-  //   channel: `chat:${chatId}`,
-  //   event: 'incoming-message',
-  //   callback: messageHandler,
-  // });
-
-  useEffect(() => {
-    pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
-
-    const messageHandler = (message: Message) => {
-      console.log(message);
+  const messageHandler = useCallback(
+    (message: Message) => {
       setMessages((prev) => [message, ...prev]);
-    };
-    pusherClient.bind(pusherEvents.INCOMING_MESSAGE, messageHandler);
+    },
+    [setMessages]
+  );
 
-    return () => {
-      pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
-      pusherClient.unbind(pusherEvents.INCOMING_MESSAGE, messageHandler);
-    };
-  }, [chatId]);
+  usePusher({
+    channel: `chat:${chatId}`,
+    event: pusherEvents.INCOMING_MESSAGE,
+    callback: messageHandler,
+  });
+
+  // useEffect(() => {
+  //   pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
+
+  //   const messageHandler = (message: Message) => {
+  //     console.log(message);
+  //     setMessages((prev) => [message, ...prev]);
+  //   };
+  //   pusherClient.bind(pusherEvents.INCOMING_MESSAGE, messageHandler);
+
+  //   return () => {
+  //     pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
+  //     pusherClient.unbind(pusherEvents.INCOMING_MESSAGE, messageHandler);
+  //   };
+  // }, [chatId]);
 
   return (
     <div

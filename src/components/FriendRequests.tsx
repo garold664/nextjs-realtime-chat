@@ -2,8 +2,8 @@
 
 import pusherEvents from '@/helpers/pusherEvents';
 import usePusher from '@/hooks/usePusher';
-import { pusherClient } from '@/lib/pusher';
-import { toPusherKey } from '@/lib/util';
+// import { pusherClient } from '@/lib/pusher';
+// import { toPusherKey } from '@/lib/util';
 import axios from 'axios';
 import { Check, UserPlus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -24,46 +24,46 @@ export default function FriendRequests({
 
   const router = useRouter();
 
-  // const friendRequestsHandler = useCallback(
-  //   ({ senderId, senderEmail }: IncomingFriendRequest) => {
-  //     setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-  //   },
-  //   [setFriendRequests]
-  // );
-
-  // usePusher({
-  //   channel: `user:${sessionId}:incoming_friend_requests`,
-  //   event: 'incoming_friend_request',
-  //   callback: friendRequestsHandler,
-  // });
-
-  useEffect(() => {
-    pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
-    );
-
-    const friendRequestsHandler = ({
-      senderId,
-      senderEmail,
-    }: IncomingFriendRequest) => {
+  const friendRequestsHandler = useCallback(
+    ({ senderId, senderEmail }: IncomingFriendRequest) => {
       setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
-    };
-    pusherClient.bind(
-      pusherEvents.INCOMING_FRIEND_REQUEST,
-      friendRequestsHandler
-    );
+    },
+    [setFriendRequests]
+  );
 
-    return () => {
-      pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
-      );
+  usePusher({
+    channel: `user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
+    event: pusherEvents.INCOMING_FRIEND_REQUEST,
+    callback: friendRequestsHandler,
+  });
 
-      pusherClient.unbind(
-        pusherEvents.INCOMING_FRIEND_REQUEST,
-        friendRequestsHandler
-      );
-    };
-  }, [incomingFriendRequests, sessionId]);
+  // useEffect(() => {
+  //   pusherClient.subscribe(
+  //     toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
+  //   );
+
+  //   const friendRequestsHandler = ({
+  //     senderId,
+  //     senderEmail,
+  //   }: IncomingFriendRequest) => {
+  //     setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+  //   };
+  //   pusherClient.bind(
+  //     pusherEvents.INCOMING_FRIEND_REQUEST,
+  //     friendRequestsHandler
+  //   );
+
+  //   return () => {
+  //     pusherClient.unsubscribe(
+  //       toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
+  //     );
+
+  //     pusherClient.unbind(
+  //       pusherEvents.INCOMING_FRIEND_REQUEST,
+  //       friendRequestsHandler
+  //     );
+  //   };
+  // }, [incomingFriendRequests, sessionId]);
 
   const handleFriendRequest = async (
     action: 'accept' | 'deny',
