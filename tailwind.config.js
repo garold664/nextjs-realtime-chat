@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require('tailwindcss/colors');
+
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,7 +19,11 @@ module.exports = {
         '2xl': '1400px',
       },
     },
-    extend: {},
+    extend: {
+      colors: {
+        primary: { ...colors.sky, DEFAULT: colors.violet[500] },
+      },
+    },
   },
   plugins: [require('@tailwindcss/forms')],
 };
