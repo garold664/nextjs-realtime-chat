@@ -72,6 +72,8 @@ export async function POST(request: Request) {
       }
     );
 
+    console.log('newMessageResponse: ', newMessageResponse);
+
     await db.zadd(`chat:${chatId}:messages`, {
       score: timestamp,
       member: JSON.stringify(message),
