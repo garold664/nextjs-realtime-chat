@@ -63,7 +63,7 @@ export default async function DashboardLayout({
           <Icons.Logo className="h-8 w-8" />
         </Link>
         {friends.length > 0 && (
-          <div className="text-xs font-semibold leading-6 text-gray-400">
+          <div className="text-xs font-semibold leading-6 text-secondary-400">
             Your chats
           </div>
         )}
@@ -74,7 +74,7 @@ export default async function DashboardLayout({
               <SidebarChatList sessionId={session.user.id} friends={friends} />
             </li>
             <li>
-              <div className="text-xs font-semibold leading-6 text-gray-400">
+              <div className="text-xs font-semibold leading-6 text-secondary-400">
                 Overview
               </div>
 
@@ -85,7 +85,7 @@ export default async function DashboardLayout({
                     <li key={option.id}>
                       <Link
                         href={option.href}
-                        className="text-gray-700 hover:text-primary-600 hover:bg-gray-50 group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                        className="text-secondary-700 hover:text-primary-600 hover:bg-secondary-50 group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold"
                       >
                         <span className={iconWrapperClasses}>
                           <Icon className="h-4 w-4" />
@@ -107,8 +107,8 @@ export default async function DashboardLayout({
             </li>
 
             <li className="-mx-6 mt-auto flex items-center">
-              <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
-                <div className="relative h-8 w-8 bg-gray-50">
+              <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary-900">
+                <div className="relative h-8 w-8 bg-secondary-50">
                   <Image
                     fill
                     referrerPolicy="no-referrer"

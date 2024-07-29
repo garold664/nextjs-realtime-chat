@@ -57,7 +57,7 @@ export default function MobileChatLayout({
       <Dialog open={open} onClose={setOpen} className="relative z-10">
         <DialogBackdrop
           transition
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
+          className="fixed inset-0 bg-secondary-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
         />
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
@@ -71,7 +71,7 @@ export default function MobileChatLayout({
                     <button
                       type="button"
                       onClick={() => setOpen(false)}
-                      className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                      className="relative rounded-md text-secondary-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
                     >
                       <span className="absolute -inset-2.5" />
                       <span className="sr-only">Close panel</span>
@@ -81,7 +81,7 @@ export default function MobileChatLayout({
                 </TransitionChild>
                 <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
                   <div className="px-4 sm:px-6">
-                    <DialogTitle className="text-base font-semibold leading-6 text-gray-900">
+                    <DialogTitle className="text-base font-semibold leading-6 text-secondary-900">
                       Panel title
                     </DialogTitle>
                   </div>
@@ -89,7 +89,7 @@ export default function MobileChatLayout({
                     {/* Your content  start*/}
 
                     {friends.length > 0 ? (
-                      <div className="text-xs font-semibold leading-6 text-gray-400">
+                      <div className="text-xs font-semibold leading-6 text-secondary-400">
                         Your chats
                       </div>
                     ) : null}
@@ -104,7 +104,7 @@ export default function MobileChatLayout({
                         </li>
 
                         <li>
-                          <div className="text-xs font-semibold leading-6 text-gray-400">
+                          <div className="text-xs font-semibold leading-6 text-secondary-400">
                             Overview
                           </div>
                           <ul role="list" className="-mx-2 mt-2 space-y-1">
@@ -114,9 +114,9 @@ export default function MobileChatLayout({
                                 <li key={option.name}>
                                   <Link
                                     href={option.href}
-                                    className="text-gray-700 hover:text-primary-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                    className="text-secondary-700 hover:text-primary-600 hover:bg-secondary-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   >
-                                    <span className="text-gray-400 border-gray-200 group-hover:border-primary-600 group-hover:text-primary-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                                    <span className="text-secondary-400 border-secondary-200 group-hover:border-primary-600 group-hover:text-primary-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
                                       <Icon className="h-4 w-4" />
                                     </span>
                                     <span className="truncate">
@@ -137,8 +137,8 @@ export default function MobileChatLayout({
                         </li>
 
                         <li className="-ml-6 mt-auto flex items-center">
-                          <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
-                            <div className="relative h-8 w-8 bg-gray-50">
+                          <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary-900">
+                            <div className="relative h-8 w-8 bg-secondary-50">
                               <Image
                                 fill
                                 referrerPolicy="no-referrer"

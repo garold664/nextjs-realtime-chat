@@ -94,7 +94,7 @@ export default function Messages({
                 <span
                   className={cn('px-4 py-2 rounded-lg inline-block', {
                     'bg-primary-600 text-white': isCurrentUser,
-                    'bg-gray-200 text-gray-900': !isCurrentUser,
+                    'bg-secondary-200 text-secondary-900': !isCurrentUser,
                     'rounded-br-none':
                       !isCurrentUser && !hasNextMessageFromSameUser,
                     'rounded-bl-none':
@@ -102,7 +102,7 @@ export default function Messages({
                   })}
                 >
                   {message.text}{' '}
-                  <span className="ml-2 text-xs text-gray-400">
+                  <span className="ml-2 text-xs text-secondary-400">
                     {formatTimestamp(message.timestamp).toString()}
                   </span>
                 </span>

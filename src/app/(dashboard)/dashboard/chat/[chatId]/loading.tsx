@@ -4,7 +4,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 export default function AddFriendLoading() {
   return (
     <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
-      <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+      <div className="flex sm:items-center justify-between py-3 border-b-2 border-secondary-200">
         <div className="relative flex items-center space-x-4">
           <div className="relative">
             <div className="relative w-8 sm:w-12 h-8 sm:h-12">
@@ -14,12 +14,12 @@ export default function AddFriendLoading() {
 
           <div className="flex flex-col leading-tight">
             <div className="text-xl flex items-center">
-              <span className="text-gray-700 mr-3 font-semibold">
+              <span className="text-secondary-700 mr-3 font-semibold">
                 <Skeleton height={20} width={300} />
               </span>
             </div>
 
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-secondary-600">
               <Skeleton height={20} width={300} />
             </span>
           </div>
@@ -30,8 +30,8 @@ export default function AddFriendLoading() {
         id="messages"
         className="flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
       ></div>
-      <div className="border-t border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
-        <div className="relative flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-primary-600">
+      <div className="border-t border-secondary-200 px-4 pt-4 mb-2 sm:mb-0">
+        <div className="relative flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-secondary-300 focus-within:ring-2 focus-within:ring-primary-600">
           <Skeleton className="block h-full" width={250} />
 
           <div

@@ -21,7 +21,8 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: { ...colors.sky, DEFAULT: colors.violet[500] },
+        primary: { ...colors.sky, DEFAULT: colors.sky[500] },
+        secondary: { ...colors.slate, DEFAULT: colors.slate[500] },
       },
     },
   },
