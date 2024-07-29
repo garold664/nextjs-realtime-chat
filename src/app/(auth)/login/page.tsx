@@ -69,6 +69,11 @@ export default function LoginPage() {
           registerProps={register('password')}
           Icon={Lock}
         />
+        <div className="text-xs text-slate-500">
+          test accounts: <br />
+          1) you@example.com 1234567 <br />
+          2) you2@example.com 1234567
+        </div>
         {showSuccessState && (
           <p className="text-green-600 text-sm mt-1">{'Success! ✅'}</p>
         )}
