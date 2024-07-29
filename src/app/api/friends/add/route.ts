@@ -1,3 +1,4 @@
+import pusherEvents from '@/helpers/pusherEvents';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
 
     const isAlreadyAdded = (await fetchRedis(
       'sismember',
-      `user:${idToAdd}:incoming_friend_requests`,
+      `user:${idToAdd}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
       session.user.id
     )) as 0 | 1;
 
@@ -58,15 +59,18 @@ export async function POST(request: Request) {
     //! Valid request, send friend request
 
     pusherServer.trigger(
-      toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
-      'incoming_friend_request',
+      toPusherKey(`user:${idToAdd}:${pusherEvents.INCOMING_FRIEND_REQUEST}`),
+      pusherEvents.INCOMING_FRIEND_REQUEST,
       {
         senderId: session.user.id,
         senderEmail: session.user.email,
       }
     );
 
-    db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
+    db.sadd(
+      `user:${idToAdd}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
+      session.user.id
+    );
     return new Response('OK');
   } catch (error) {
     if (error instanceof z.ZodError) {

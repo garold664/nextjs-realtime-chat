@@ -1,3 +1,4 @@
+import pusherEvents from '@/helpers/pusherEvents';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
 
     const hasFriendRequest = await fetchRedis(
       'sismember',
-      `user:${currentUserId}:incoming_friend_requests`,
+      `user:${currentUserId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
       friendId
     );
 
@@ -49,19 +50,22 @@ export async function POST(request: Request) {
     await Promise.all([
       pusherServer.trigger(
         toPusherKey(`user:${friendId}:friends`),
-        'new-friend',
+        pusherEvents.NEW_FRIEND,
         user
       ),
       pusherServer.trigger(
         toPusherKey(`user:${currentUserId}:friends`),
-        'new-friend',
+        pusherEvents.NEW_FRIEND,
         friend
       ),
       //! accept friend request
       await db.sadd(`user:${currentUserId}:friends`, friendId),
       await db.sadd(`user:${friendId}:friends`, currentUserId),
       //! remove friend request from db
-      await db.srem(`user:${currentUserId}:incoming_friend_requests`, friendId),
+      await db.srem(
+        `user:${currentUserId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
+        friendId
+      ),
     ]);
 
     // TODO: await db.srem(`user:${currentUserId}:outbound_friend_requests`, friendId);

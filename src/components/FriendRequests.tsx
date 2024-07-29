@@ -1,5 +1,6 @@
 'use client';
 
+import pusherEvents from '@/helpers/pusherEvents';
 import usePusher from '@/hooks/usePusher';
 import { pusherClient } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/util';
@@ -38,7 +39,7 @@ export default function FriendRequests({
 
   useEffect(() => {
     pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
     );
 
     const friendRequestsHandler = ({
@@ -47,16 +48,22 @@ export default function FriendRequests({
     }: IncomingFriendRequest) => {
       setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
     };
-    pusherClient.bind('incoming_friend_request', friendRequestsHandler);
+    pusherClient.bind(
+      pusherEvents.INCOMING_FRIEND_REQUEST,
+      friendRequestsHandler
+    );
 
     return () => {
       pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+        toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
       );
 
-      pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
+      pusherClient.unbind(
+        pusherEvents.INCOMING_FRIEND_REQUEST,
+        friendRequestsHandler
+      );
     };
-  }, [incomingFriendRequests]);
+  }, [incomingFriendRequests, sessionId]);
 
   const handleFriendRequest = async (
     action: 'accept' | 'deny',

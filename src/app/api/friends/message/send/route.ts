@@ -1,3 +1,4 @@
+import pusherEvents from '@/helpers/pusherEvents';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -55,19 +56,24 @@ export async function POST(request: Request) {
     };
 
     const message = messageValidator.parse(messageData);
+    //! LOG
     console.log(message);
 
     pusherServer.trigger(
       toPusherKey(`chat:${chatId}`),
-      'incoming-message',
+      pusherEvents.INCOMING_MESSAGE,
       message
     );
 
-    pusherServer.trigger(toPusherKey(`user:${friendId}:chats`), 'new-message', {
-      ...message,
-      senderImg: sender.image,
-      senderName: sender.name,
-    });
+    pusherServer.trigger(
+      toPusherKey(`user:${friendId}:chats`),
+      pusherEvents.NEW_MESSAGE,
+      {
+        ...message,
+        senderImg: sender.image,
+        senderName: sender.name,
+      }
+    );
 
     await db.zadd(`chat:${chatId}:messages`, {
       score: timestamp,

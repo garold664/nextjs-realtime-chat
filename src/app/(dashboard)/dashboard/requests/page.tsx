@@ -1,4 +1,5 @@
 import FriendRequests from '@/components/FriendRequests';
+import pusherEvents from '@/helpers/pusherEvents';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { User } from '@/types/db';
@@ -13,7 +14,7 @@ export default async function RequestsPage() {
 
   const incomingSenderIds = (await fetchRedis(
     'smembers',
-    `user:${session.user.id}:incoming_friend_requests`
+    `user:${session.user.id}:${pusherEvents.INCOMING_FRIEND_REQUEST}`
   )) as string[];
 
   const incomingFriendRequests = await Promise.all(

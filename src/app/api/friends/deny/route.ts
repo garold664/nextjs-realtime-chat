@@ -1,3 +1,4 @@
+import pusherEvents from '@/helpers/pusherEvents';
 import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -23,10 +24,13 @@ export async function POST(request: Request) {
     await Promise.all([
       pusherServer.trigger(
         toPusherKey(`user:${currentUserId}:friends`),
-        'deny-friend',
+        pusherEvents.DENY_FRIEND,
         friend
       ),
-      db.srem(`user:${currentUserId}:incoming_friend_requests`, friendId),
+      db.srem(
+        `user:${currentUserId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`,
+        friendId
+      ),
     ]);
 
     return new Response('OK', { status: 200 });

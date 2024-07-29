@@ -1,5 +1,6 @@
 'use client';
 
+import pusherEvents from '@/helpers/pusherEvents';
 import usePusher from '@/hooks/usePusher';
 import { pusherClient } from '@/lib/pusher';
 import { toPusherKey } from '@/lib/util';
@@ -52,7 +53,7 @@ export default function FriendRequestSidebarOptions({
 
   useEffect(() => {
     pusherClient.subscribe(
-      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
     );
     pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
 
@@ -64,38 +65,25 @@ export default function FriendRequestSidebarOptions({
       setUnseenRequestCount((prev) => prev - 1);
     };
 
-    pusherClient.bind('incoming_friend_requests', friendRequestHandler);
-    pusherClient.bind('new-friend', addedFriendHandler);
+    pusherClient.bind(
+      pusherEvents.INCOMING_FRIEND_REQUEST,
+      friendRequestHandler
+    );
+    pusherClient.bind(pusherEvents.NEW_FRIEND, addedFriendHandler);
 
     return () => {
       pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+        toPusherKey(`user:${sessionId}:${pusherEvents.INCOMING_FRIEND_REQUEST}`)
       );
       pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
 
-      pusherClient.unbind('new-friend', addedFriendHandler);
-      pusherClient.unbind('incoming_friend_requests', friendRequestHandler);
+      pusherClient.unbind(pusherEvents.NEW_FRIEND, addedFriendHandler);
+      pusherClient.unbind(
+        pusherEvents.INCOMING_FRIEND_REQUEST,
+        friendRequestHandler
+      );
     };
   }, [sessionId]);
-
-  // useEffect(() => {
-  //   pusherClient.subscribe(
-  //     toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-  //   );
-
-  //   const friendRequestsHandler = () => {
-  //     setUnseenRequestCount((prev) => prev + 1);
-  //   };
-  //   pusherClient.bind('incoming_friend_request', friendRequestsHandler);
-
-  //   return () => {
-  //     pusherClient.unsubscribe(
-  //       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-  //     );
-
-  //     pusherClient.unbind('incoming_friend_request', friendRequestsHandler);
-  //   };
-  // }, []);
 
   return (
     <Link

@@ -6,8 +6,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
-import usePusher from '@/hooks/usePusher';
+// import usePusher from '@/hooks/usePusher';
 import { pusherClient } from '@/lib/pusher';
+import pusherEvents from '@/helpers/pusherEvents';
 
 interface MessagesProps {
   initialMessages: Message[];
@@ -49,13 +50,14 @@ export default function Messages({
     pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
 
     const messageHandler = (message: Message) => {
+      console.log(message);
       setMessages((prev) => [message, ...prev]);
     };
-    pusherClient.bind('incoming-message', messageHandler);
+    pusherClient.bind(pusherEvents.INCOMING_MESSAGE, messageHandler);
 
     return () => {
       pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
-      pusherClient.unbind('incoming-message', messageHandler);
+      pusherClient.unbind(pusherEvents.INCOMING_MESSAGE, messageHandler);
     };
   }, [chatId]);
 

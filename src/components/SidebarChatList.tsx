@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import UnseenChatToast from './UnseenChatToast';
 import { pusherClient } from '@/lib/pusher';
+import pusherEvents from '@/helpers/pusherEvents';
 
 interface SidebarChatListProps {
   sessionId: string;
@@ -23,13 +24,10 @@ export default function SidebarChatList({
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
   const [activeChats, setActiveChats] = useState<User[]>(friends);
 
-  const newFriendHandler = useCallback(
-    (newFriend: User) => {
-      // console.log('new friend');
-      setActiveChats((prev) => [...prev, newFriend]);
-    },
-    [router]
-  );
+  const newFriendHandler = useCallback((newFriend: User) => {
+    // console.log('new friend');
+    setActiveChats((prev) => [...prev, newFriend]);
+  }, []);
 
   // const chatHandler = useCallback(
   //   (message: ExtendedMessage) => {
@@ -103,15 +101,15 @@ export default function SidebarChatList({
       setUnseenMessages((prev) => [...prev, message]);
     };
 
-    pusherClient.bind('new-message', chatHandler);
-    pusherClient.bind('new-friend', newFriendHandler);
+    pusherClient.bind(pusherEvents.NEW_MESSAGE, chatHandler);
+    pusherClient.bind(pusherEvents.NEW_FRIEND, newFriendHandler);
 
     return () => {
       pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
       pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
 
-      pusherClient.unbind('new-message', chatHandler);
-      pusherClient.unbind('new-friend', newFriendHandler);
+      pusherClient.unbind(pusherEvents.NEW_MESSAGE, chatHandler);
+      pusherClient.unbind(pusherEvents.NEW_FRIEND, newFriendHandler);
     };
   }, [pathname, sessionId, router]);
 
